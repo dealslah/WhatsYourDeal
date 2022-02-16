@@ -1,8 +1,21 @@
 {
-  "name": "WhatsYourDeal",
+  "name": "@whatsyourdeal/root",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:dealslah/WhatsYourDeal.git",
-  "author": "aloysius <alloystory@gmail.com>",
-  "license": "MIT"
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "format": "prettier --write \"packages/**/*.{ts,tsx}\"",
+    "dev:be": "yarn workspace @whatsyourdeal/backend start:dev",
+    "dev:fe": "yarn workspace @whatsyourdeal/client dev"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
+  }
 }
