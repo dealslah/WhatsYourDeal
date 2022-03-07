@@ -7,6 +7,7 @@
     "prebuild": "rimraf .next",
     "build": "next build",
     "start": "next start",
+    "test": "echo 'not implemented'",
     "lint": "next lint"
   },
   "dependencies": {
