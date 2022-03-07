@@ -4,14 +4,17 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "rimraf .next",
     "build": "next build",
     "start": "next start",
+    "test": "echo 'not implemented'",
     "lint": "next lint"
   },
   "dependencies": {
     "next": "12.0.10",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@types/node": "17.0.18",
