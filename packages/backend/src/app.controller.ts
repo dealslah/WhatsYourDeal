@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
+import { Deal } from 'types/models';
 import { AppService } from './app.service'
 
 @Controller()
