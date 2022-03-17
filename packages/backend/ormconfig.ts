@@ -12,6 +12,7 @@ function getConfig(): ConnectionOptions {
     entities: ['db/entities/**/*.ts'],
     migrations: ['db/migrations/**/*.js'],
     migrationsTableName: 'migrations',
+    legacySpatialSupport: false,
   }
 }
 
