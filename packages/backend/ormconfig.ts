@@ -8,10 +8,10 @@ function getConfig(): ConnectionOptions {
     username: process.env['DB_USER'] ?? 'wydu',
     password: process.env['DB_PASSWORD'] ?? 'wydpassword',
     database: 'wyd',
-    synchronize: true,
     logging: false,
     entities: ['db/entities/**/*.ts'],
-    migrations: ['db/migrations/**/*.ts'],
+    migrations: ['db/migrations/**/*.js'],
+    migrationsTableName: 'migrations',
   }
 }
 
