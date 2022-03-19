@@ -18,7 +18,7 @@ export class Deal {
   id: number
 
   @ManyToOne(() => MerchantOutlet)
-  merchant: MerchantOutlet
+  merchantOutlet: MerchantOutlet
 
   @Column({ type: 'float', precision: 2 })
   originalPrice: number
@@ -26,7 +26,7 @@ export class Deal {
   @Column({ type: 'float', precision: 2 })
   discountPrice: number
 
-  @Column()
+  @Column({ type: 'text' })
   description: string
 
   @Column()
