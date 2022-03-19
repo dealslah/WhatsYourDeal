@@ -1,18 +1,42 @@
 import { ConnectionOptions } from 'typeorm'
 
 function getConfig(): ConnectionOptions {
-  return {
+  const baseConfig: ConnectionOptions = {
     type: 'mysql',
-    host: process.env['DB_HOST'] ?? 'localhost',
-    port: Number(process.env['DB_PORT'] ?? 3306),
-    username: process.env['DB_USER'] ?? 'wydu',
-    password: process.env['DB_PASSWORD'] ?? 'wydpassword',
-    database: 'wyd',
     logging: false,
     entities: ['db/entities/**/*.ts'],
     migrations: ['db/migrations/**/*.js'],
     migrationsTableName: 'migrations',
     legacySpatialSupport: false,
+  }
+
+  if (process.env['NODE_ENV'] == 'development') {
+    return {
+      ...baseConfig,
+      host: '',
+      port: 3306,
+      username: '',
+      password: '',
+      database: '',
+    }
+  } else if (process.env['NODE_ENV'] == 'production') {
+    return {
+      ...baseConfig,
+      host: '',
+      port: 3306,
+      username: '',
+      password: '',
+      database: '',
+    }
+  }
+
+  return {
+    ...baseConfig,
+    host: 'localhost',
+    port: 3306,
+    username: 'wydu',
+    password: 'wydpassword',
+    database: 'wyd',
   }
 }
 
