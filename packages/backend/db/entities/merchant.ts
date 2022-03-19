@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, PrimaryColumn } from 'typeorm'
 
 export enum MerchantCategory {
   RESTAURANTS = 'Restaurants',
@@ -8,15 +8,13 @@ export enum MerchantCategory {
 
 @Entity()
 export class Merchant {
-  @PrimaryGeneratedColumn()
-  id: number
+  constructor(args?: Partial<Merchant>) {
+    Object.assign(this, args)
+  }
 
-  @Column()
+  @PrimaryColumn()
   name: string
 
   @Column({ type: 'enum', enum: MerchantCategory })
   category: MerchantCategory
-
-  @Column()
-  description: string
 }

@@ -1,5 +1,5 @@
 import { Deal } from 'db/entities/deal'
-import { EntityRepository, AbstractRepository, FindManyOptions } from 'typeorm'
+import { AbstractRepository, EntityRepository, FindManyOptions } from 'typeorm'
 import { Point } from 'wkx'
 
 @EntityRepository(Deal)
@@ -40,5 +40,20 @@ export class DealRepository extends AbstractRepository<Deal> {
     }
 
     return query.getMany()
+  }
+
+  save(entities: Deal[]) {
+    // App level check constraints as TypeORM does not
+    // support constraints for MySQL 8 yet.
+
+    if (entities.some((e) => e.dealStartDate < e.dealEndDate)) {
+      throw new Error('dealStartDate cannot be before dealEndDate')
+    }
+
+    if (entities.some((e) => e.originalPrice < e.discountPrice)) {
+      throw new Error('originalPrice cannot be lower than discountPrice')
+    }
+
+    this.repository.save(entities)
   }
 }

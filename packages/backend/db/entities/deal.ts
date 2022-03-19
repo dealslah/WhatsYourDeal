@@ -2,24 +2,23 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Point } from 'wkx'
-import { Merchant } from './merchant'
+import { MerchantOutlet } from './merchantOutlet'
 
 @Entity()
 export class Deal {
+  constructor(args?: Partial<Deal>) {
+    Object.assign(this, args)
+  }
+
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => Merchant)
-  merchant: Merchant
-
-  @Column()
-  imageUrl: string
+  @ManyToOne(() => MerchantOutlet)
+  merchant: MerchantOutlet
 
   @Column({ type: 'float', precision: 2 })
   originalPrice: number
@@ -27,18 +26,16 @@ export class Deal {
   @Column({ type: 'float', precision: 2 })
   discountPrice: number
 
-  @Index({ spatial: true })
-  @Column({
-    type: 'point',
-    spatialFeatureType: 'Point',
-    srid: 4326,
-    transformer: {
-      from: (value: string) => Point.parse(value),
-      to: (value: Point) => (value instanceof Point ? value.toWkt() : value),
-    },
-  })
-  location: Point
+  @Column()
+  description: string
 
+  @Column()
+  dealStartDate: Date
+
+  @Column()
+  dealEndDate: Date
+
+  // For debug purposes
   @CreateDateColumn()
   createdAt: Date
 
