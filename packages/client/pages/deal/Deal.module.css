@@ -1,0 +1,8 @@
+.image {
+  border-radius: 12px;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: #8F8F8F;
+}
