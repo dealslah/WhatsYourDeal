@@ -40,7 +40,6 @@ const Home: NextPage = () => {
     );
   }
 
-  // @ts-ignore
   return (
     <div>
       <Head>

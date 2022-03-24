@@ -9,7 +9,6 @@ import styles from "./Deal.module.css";
 
 export default function DealPage({ dealData }: { dealData: [Deal] }) {
   const deal = dealData[0];
-  console.log(deal);
 
   const router = useRouter();
   const handleBack = () => {
@@ -57,7 +56,6 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: { params: Deal }) {
   // Fetch necessary data for the blog post using params.id
   const dealData = getDealData(params.id);
-  console.log("params", params);
   return {
     props: {
       dealData
