@@ -11,8 +11,8 @@ const sampleDeals: Deal[] = [{
     address: "123 Test Drive",
     imageUrl: "https://www.shakeshack.com.sg/wp-content/uploads/2020/09/burger.png",
     location: {
-      latitude: 10,
-      longitude: 10,
+      latitude: 1.3052980098208944,
+      longitude: 103.8307333347115,
     }
   },
   originalPrice: 15.00,
@@ -37,8 +37,8 @@ const sampleDeals: Deal[] = [{
     address: "234234 Test Drive",
     imageUrl: "https://unscrambled.sg/wp-content/uploads/2021/06/NTUC-FairPrice.jpg",
     location: {
-      latitude: 10,
-      longitude: 10,
+      latitude: 1.3094857476463422,
+      longitude: 103.79272060663412,
     }
   },
   originalPrice: 40.00,
@@ -64,8 +64,8 @@ const sampleDeals: Deal[] = [{
     address: "345634563456 Test Drive",
     imageUrl: "https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1534,h_1080,f_auto/activities/vdlx8icvd14wrnagddhl/UniversalStudiosSingaporeTickets-Klook.jpg",
     location: {
-      latitude: 10,
-      longitude: 10,
+      latitude: 1.254061015214947,
+      longitude: 103.8238040894322,
     }
   },
   originalPrice: 100.00,
@@ -86,8 +86,8 @@ const sampleDeals: Deal[] = [{
     address: "sdfgsdfgsdfg Test Drive",
     imageUrl: "https://www.akindo-sushiro.co.jp/en/img/top/store_ph01_02_sp.jpg",
     location: {
-      latitude: 10,
-      longitude: 10,
+      latitude: 1.2865249868798516,
+      longitude: 103.82667735743114,
     }
   },
   originalPrice: 200.00,
