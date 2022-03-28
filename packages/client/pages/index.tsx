@@ -10,7 +10,7 @@ import sampleDeals from "../entities/sampleDeals";
 import styles from "../styles/Home.module.css";
 import theme from "../theme/theme";
 import PriceFormatter from "../util/PriceFormatter";
-import { getDistance, isBlank } from "../util/util";
+import { distance, formatDistance, isBlank } from "../util/util";
 
 
 const Home: NextPage = () => {
@@ -69,12 +69,23 @@ const Home: NextPage = () => {
   }
 
   const filterDealsToCriteria = (deals: Deal[], criteria: string) => {
-    if (isBlank(criteria)) {
-      return deals;
+    let result = deals;
+
+    // Sort according to location if user has location enabled
+    if (isLocationValid) {
+      result = result.sort((a, b) =>
+        distance(a.merchantOutlet.location.latitude, userLatitude, a.merchantOutlet.location.longitude, userLongitude) -
+        distance(b.merchantOutlet.location.latitude, userLatitude, b.merchantOutlet.location.longitude, userLongitude)
+      )
     }
 
+    if (isBlank(criteria)) {
+      return result;
+    }
+
+    // Filter result according to user criteria in text box
     const lowercaseCriteria = criteria.toLowerCase();
-    return deals.filter(deal =>
+    return result.filter(deal =>
       deal.dealDescription.toLowerCase().includes(lowercaseCriteria)
       || deal.merchantOutlet.merchant.name.toLowerCase().includes(lowercaseCriteria)
       || deal.merchantOutlet.address.toLowerCase().includes(lowercaseCriteria)
@@ -123,7 +134,7 @@ const Home: NextPage = () => {
                         <Typography variant="h6">{deal.merchantOutlet.merchant.name}</Typography>
                         {
                           isLocationValid ?
-                            <Typography>{getDistance(userLatitude, deal.merchantOutlet.location.latitude,
+                            <Typography>{formatDistance(userLatitude, deal.merchantOutlet.location.latitude,
                               userLongitude, deal.merchantOutlet.location.longitude)}</Typography> :
                             <div />
                         }
