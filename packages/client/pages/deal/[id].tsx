@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import TelegramButton from "../../components/TelegramButton";
 import { Deal } from "../../entities/deal";
 import PriceFormatter from "../../util/PriceFormatter";
-import { getDealData, getDealIds, getDistance } from "../../util/util";
+import { distance, formatDistance, getDealData, getDealIds } from "../../util/util";
 import styles from "./Deal.module.css";
 
 export default function DealPage({ dealData }: { dealData: [Deal] }) {
@@ -70,7 +70,7 @@ export default function DealPage({ dealData }: { dealData: [Deal] }) {
 
       {
         isLocationValid ?
-          <Typography variant="h5">{getDistance(userLatitude, deal.merchantOutlet.location.latitude,
+          <Typography variant="h5">{formatDistance(userLatitude, deal.merchantOutlet.location.latitude,
             userLongitude, deal.merchantOutlet.location.longitude)}</Typography> :
           <div />
       }
