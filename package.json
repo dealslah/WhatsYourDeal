@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "format": "prettier --write \"packages/**/*.{ts,tsx}\"",
-    "dev:be": "yarn workspace @whatsyourdeal/backend start:dev",
+    "dev:be": "yarn workspace @whatsyourdeal/backend dev",
     "dev:fe": "yarn workspace @whatsyourdeal/client dev"
   },
   "devDependencies": {
