@@ -4,7 +4,7 @@ function getConfig(): ConnectionOptions {
   const baseConfig: ConnectionOptions = {
     type: 'mysql',
     logging: false,
-    entities: ['db/entities/**/*.ts'],
+    entities: [__dirname + 'db/entities/**/*.ts'],
     migrations: ['db/migrations/**/*.js'],
     migrationsTableName: 'migrations',
     legacySpatialSupport: false,

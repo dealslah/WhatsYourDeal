@@ -13,8 +13,8 @@ export class Merchant {
   }
 
   @PrimaryColumn()
-  name: string
+  name!: string
 
   @Column({ type: 'enum', enum: MerchantCategory })
-  category: MerchantCategory
+  category!: MerchantCategory
 }

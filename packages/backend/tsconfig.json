@@ -7,9 +7,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": false,
+    // "strictPropertyInitialization": false,
     "target": "es2017",
     "sourceMap": true,
+    "outDir": "./dist",
     "baseUrl": "./"
   }
 }

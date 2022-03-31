@@ -15,16 +15,16 @@ export class MerchantOutlet {
   }
 
   @PrimaryGeneratedColumn()
-  id: number
+  id!: number
 
   @ManyToOne(() => Merchant)
-  merchant: Merchant
+  merchant!: Merchant
 
   @Column()
-  address: string
+  address!: string
 
   @Column()
-  imageUrl: string
+  imageUrl!: string
 
   @Index({ spatial: true })
   @Column({
@@ -36,5 +36,5 @@ export class MerchantOutlet {
       to: (value: Point) => (value instanceof Point ? value.toWkt() : value),
     },
   })
-  geoLocation: Point
+  geoLocation!: Point
 }
