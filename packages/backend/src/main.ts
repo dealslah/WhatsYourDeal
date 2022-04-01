@@ -7,8 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   // App initialisation.
-  const connection = await createConnection(ormconfig)
-  console.log(`Database connection established: ${connection.name}`)
+  // const connection = await createConnection(ormconfig)
+  // console.log(`Database connection established: ${connection.name}`)
 
   await app.listen(8080)
 }

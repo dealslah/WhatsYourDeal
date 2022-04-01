@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm'
-import { Point } from 'wkx'
+import { Geometry, Point } from 'wkx'
 import { Merchant } from './merchant'
 
 @Entity()
@@ -32,7 +32,7 @@ export class MerchantOutlet {
     spatialFeatureType: 'Point',
     srid: 4326,
     transformer: {
-      from: (value: string) => Point.parse(value),
+      from: (value: string) => Geometry.parse(value),
       to: (value: Point) => (value instanceof Point ? value.toWkt() : value),
     },
   })
