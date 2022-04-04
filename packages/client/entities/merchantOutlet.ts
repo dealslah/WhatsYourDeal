@@ -1,14 +1,14 @@
-import { Merchant } from "./merchant";
+import { Merchant } from './merchant'
 
 export interface MerchantOutlet {
-  id: string;
+  id: string
 
-  merchant: Merchant;
-  address: string;
-  imageUrl: string;
+  merchant: Merchant
+  address: string
+  imageUrl: string
 
   location: {
-    latitude: number;
-    longitude: number;
+    latitude: number
+    longitude: number
   }
 }

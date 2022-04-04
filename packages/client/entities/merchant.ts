@@ -1,4 +1,4 @@
 export interface Merchant {
-  name: string;
-  category: [string];
+  name: string
+  category: [string]
 }

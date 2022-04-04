@@ -1,18 +1,18 @@
-import { MerchantOutlet } from "./merchantOutlet";
+import { MerchantOutlet } from './merchantOutlet'
 
 export interface Deal {
-  id: string;
+  id: string
 
-  merchantOutlet: MerchantOutlet;
+  merchantOutlet: MerchantOutlet
 
-  originalPrice: number;
-  currentPrice: number;
+  originalPrice: number
+  currentPrice: number
 
-  dealDescription: string;
+  dealDescription: string
 
-  promotionStartDate?: number;
-  promotionEndDate?: number;
+  promotionStartDate?: number
+  promotionEndDate?: number
 
-  createdAt: number;
-  updatedAt: number;
+  createdAt: number
+  updatedAt: number
 }
