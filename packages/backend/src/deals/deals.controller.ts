@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { mapDealToApiType } from 'db/mappers/deal'
 import {
+  CreateDealRequest,
   FindDealByIdResponse,
   FindDealsRequest,
   FindDealsResponse,
@@ -24,5 +25,10 @@ export class DealsController {
     return {
       deal: deal ? mapDealToApiType(deal) : null,
     }
+  }
+
+  @Post('/create')
+  async createDeal(@Body() body: CreateDealRequest) {
+    await this.dealsService.createDeal(body)
   }
 }
