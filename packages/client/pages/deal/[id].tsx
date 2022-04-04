@@ -13,12 +13,15 @@ import { useEffect, useState } from 'react'
 import api from '../../api'
 import TelegramButton from '../../components/TelegramButton'
 import PriceFormatter from '../../util/PriceFormatter'
+import { useGeoLocation } from '../../util/useGeoLocation'
 import { formatDistance } from '../../util/util'
 import styles from './Deal.module.css'
 
 const DealPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
+
+  const { isLocationValid, userLatitude, userLongitude } = useGeoLocation()
 
   const [deal, setDeal] = useState<Deal | null>(null)
 
@@ -28,48 +31,11 @@ const DealPage: NextPage = () => {
       const data = await api.findDealById(Number(id))
       setDeal(data.deal)
     })()
-  })
+  }, [id])
 
   const handleBack = () => {
     router.back()
   }
-
-  const [isLocationValid, setIsLocationValid] = useState(false)
-  const [userLatitude, setUserLatitude] = useState(-1)
-  const [userLongitude, setUserLongitude] = useState(-1)
-
-  const success = (pos: GeolocationPosition) => {
-    const crd = pos.coords
-    setUserLatitude(crd.latitude)
-    setUserLongitude(crd.longitude)
-    setIsLocationValid(true)
-  }
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        if (result.state === 'granted') {
-          navigator.geolocation.getCurrentPosition(success)
-        } else if (result.state === 'prompt') {
-          navigator.geolocation.getCurrentPosition(
-            success,
-            (err) => {
-              console.log(`ERROR(${err.code}): ${err.message}`)
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 0,
-            }
-          )
-        } else if (result.state === 'denied') {
-          console.log('User denied geolocation position')
-        }
-      })
-    } else {
-      console.log('geolocation not available')
-    }
-  }, [])
 
   return (
     <Container>

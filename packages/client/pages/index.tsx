@@ -17,6 +17,7 @@ import TelegramButton from '../components/TelegramButton'
 import styles from '../styles/Home.module.css'
 import theme from '../theme/theme'
 import PriceFormatter from '../util/PriceFormatter'
+import { useGeoLocation } from '../util/useGeoLocation'
 import { distance, formatDistance, isBlank } from '../util/util'
 
 const MAX_DISTANCE_IN_METERS = 2000
@@ -27,42 +28,7 @@ const Home: NextPage = () => {
   const [currentDeals, setCurrentDeals] = useState<Deal[]>([])
   const [currentFilter, setCurrentFilter] = useState<string>('')
 
-  const [isLocationValid, setIsLocationValid] = useState(false)
-  const [userLatitude, setUserLatitude] = useState(-1)
-  const [userLongitude, setUserLongitude] = useState(-1)
-
-  const success = (pos: GeolocationPosition) => {
-    const crd = pos.coords
-    setUserLatitude(crd.latitude)
-    setUserLongitude(crd.longitude)
-    setIsLocationValid(true)
-  }
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        if (result.state === 'granted') {
-          navigator.geolocation.getCurrentPosition(success)
-        } else if (result.state === 'prompt') {
-          navigator.geolocation.getCurrentPosition(
-            success,
-            (err) => {
-              console.log(`ERROR(${err.code}): ${err.message}`)
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 0,
-            }
-          )
-        } else if (result.state === 'denied') {
-          console.log('User denied geolocation position')
-        }
-      })
-    } else {
-      console.log('geolocation not available')
-    }
-  }, [])
+  const { isLocationValid, userLatitude, userLongitude } = useGeoLocation()
 
   useEffect(() => {
     if (!isLocationValid) return
@@ -71,6 +37,7 @@ const Home: NextPage = () => {
         `Finding deals within ${MAX_DISTANCE_IN_METERS}m of ${userLatitude}, ${userLongitude}`
       )
       const data = await api.findDeals(userLatitude, userLongitude)
+      console.log(data)
       setCurrentDeals(data.deals)
     })()
   }, [isLocationValid, userLatitude, userLongitude])
