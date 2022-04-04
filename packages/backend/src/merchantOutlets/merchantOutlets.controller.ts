@@ -1,4 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common'
+import { mapMerchantOutletToApiType } from 'db/mappers/merchantOutlet'
 import {
   FindMerchantOutletsRequest,
   FindMerchantOutletsResponse,
@@ -13,8 +14,9 @@ export class MerchantOutletsController {
   async findAll(
     @Query() query: FindMerchantOutletsRequest
   ): Promise<FindMerchantOutletsResponse> {
+    const outlets = await this.merchantOutletService.findMerchantOutlets(query)
     return {
-      outlets: await this.merchantOutletService.findMerchantOutlets(query),
+      outlets: outlets.map(mapMerchantOutletToApiType),
     }
   }
 }

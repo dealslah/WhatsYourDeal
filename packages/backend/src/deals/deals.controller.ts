@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common'
+import { mapDealToApiType } from 'db/mappers/deal'
 import {
   FindDealByIdResponse,
   FindDealsRequest,
@@ -11,15 +12,17 @@ export class DealsController {
 
   @Get()
   async findAll(@Query() query: FindDealsRequest): Promise<FindDealsResponse> {
+    const deals = await this.dealsService.findDeals(query)
     return {
-      deals: await this.dealsService.findDeals(query),
+      deals: deals.map(mapDealToApiType),
     }
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<FindDealByIdResponse> {
+    const deal = await this.dealsService.findOne(id)
     return {
-      deal: (await this.dealsService.findOne(id)) ?? null,
+      deal: deal ? mapDealToApiType(deal) : null,
     }
   }
 }
