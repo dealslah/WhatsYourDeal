@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Deal } from 'db/entities/deal'
 import { Merchant } from 'db/entities/merchant'
-import { MerchantOutlet } from 'db/entities/merchantOutlet'
-import { first } from 'lodash'
-import { Between, Repository } from 'typeorm'
+import { FindCondition, In, Repository } from 'typeorm'
+import { FindMerchantsRequest } from 'types/interfaces'
 
 @Injectable()
 export class MerchantsService {
@@ -13,31 +11,29 @@ export class MerchantsService {
     private merchantRepository: Repository<Merchant>
   ) {}
 
-  findAll(skip: number, take: number): Promise<Merchant[]> {
-    return this.merchantRepository.find({ skip, take })
-  }
+  findMerchants(query: FindMerchantsRequest): Promise<Merchant[]> {
+    const where: FindCondition<Merchant> = {}
 
-  findOne(name: string): Promise<Merchant | undefined> {
-    const values = this.merchantRepository
-      .createQueryBuilder('merchant')
-      .where('merchant.name = :name', {
-        name: name,
-      })
-      .getOne()
-    return values
-  }
+    if (query.name) {
+      if (typeof query.name === 'object') {
+        where.name = In(query.name)
+      } else {
+        where.name = query.name
+      }
+    }
 
-  findByCategory(category: number): Promise<Merchant[] | undefined> {
-    const values = this.merchantRepository
-      .createQueryBuilder('merchant')
-      .where('merchant.category = :category', {
-        category: category,
-      })
-      .getMany()
-    return values
-  }
+    if (query.category) {
+      if (typeof query.category === 'object') {
+        where.category = In(query.category)
+      } else {
+        where.category = query.category
+      }
+    }
 
-  async remove(id: string): Promise<void> {
-    await this.merchantRepository.delete(id)
+    return this.merchantRepository.find({
+      where,
+      skip: query.skip ?? 0,
+      take: query.take ?? 100,
+    })
   }
 }

@@ -15,30 +15,30 @@ export class Deal {
   }
 
   @PrimaryGeneratedColumn()
-  id!: number
+  id: number
 
   @ManyToOne(() => MerchantOutlet)
-  merchantOutlet!: MerchantOutlet
+  merchantOutlet: MerchantOutlet
 
   @Column({ type: 'float', precision: 2 })
-  originalPrice!: number
+  originalPrice: number
 
   @Column({ type: 'float', precision: 2 })
-  discountPrice!: number
+  discountPrice: number
 
   @Column({ type: 'text' })
-  description!: string
+  description: string
 
   @Column()
-  dealStartDate!: Date
+  dealStartDate: Date
 
   @Column()
-  dealEndDate!: Date
+  dealEndDate: Date
 
   // For debug purposes
   @CreateDateColumn()
-  createdAt!: Date
+  createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt!: Date
+  updatedAt: Date
 }

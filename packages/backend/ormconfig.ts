@@ -1,10 +1,13 @@
 import { ConnectionOptions } from 'typeorm'
+import { Deal } from 'db/entities/deal'
+import { Merchant } from 'db/entities/merchant'
+import { MerchantOutlet } from 'db/entities/merchantOutlet'
 
 function getConfig(): ConnectionOptions {
   const baseConfig: ConnectionOptions = {
     type: 'mysql',
     logging: false,
-    entities: [__dirname + 'db/entities/**/*.ts'],
+    entities: [Deal, Merchant, MerchantOutlet],
     migrations: ['db/migrations/**/*.js'],
     migrationsTableName: 'migrations',
     legacySpatialSupport: false,

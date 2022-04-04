@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Deal } from 'db/entities/deal'
+import { DealRepository } from 'db/repositories/deal'
 import { DealsController } from './deals.controller'
 import { DealsService } from './deals.service'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Deal])],
+  imports: [TypeOrmModule.forFeature([DealRepository])],
   controllers: [DealsController],
   providers: [DealsService],
 })
