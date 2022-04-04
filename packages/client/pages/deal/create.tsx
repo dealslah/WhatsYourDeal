@@ -18,7 +18,7 @@ import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import api from '../../api'
-import styles from '../styles/ContactUs.module.css'
+import styles from '../../styles/ContactUs.module.css'
 
 type FormInputs = CreateDealRequest
 
