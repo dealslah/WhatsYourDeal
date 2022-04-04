@@ -1,95 +1,124 @@
-import { Box, Container, Grid, TextField, ThemeProvider, Typography } from '@mui/material';
-import Image from "material-ui-image";
+import {
+  Box,
+  Container,
+  Grid,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from '@mui/material'
+import { Deal } from '@whatsyourdeal/backend/types/models'
+import Image from 'material-ui-image'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import TelegramButton from "../components/TelegramButton";
-import { Deal } from "../entities/deal";
-import sampleDeals from "../entities/sampleDeals";
-import styles from "../styles/Home.module.css";
-import theme from "../theme/theme";
-import PriceFormatter from "../util/PriceFormatter";
-import { distance, formatDistance, isBlank } from "../util/util";
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import api from '../api'
+import TelegramButton from '../components/TelegramButton'
+import styles from '../styles/Home.module.css'
+import theme from '../theme/theme'
+import PriceFormatter from '../util/PriceFormatter'
+import { distance, formatDistance, isBlank } from '../util/util'
 
+const MAX_DISTANCE_IN_METERS = 2000
 
 const Home: NextPage = () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [currentDeals, setCurrentDeals] = useState<Deal[]>(sampleDeals);
-  const [currentFilter, setCurrentFilter] = useState<string>("");
+  const [currentDeals, setCurrentDeals] = useState<Deal[]>([])
+  const [currentFilter, setCurrentFilter] = useState<string>('')
 
-  const [isLocationValid, setIsLocationValid] = useState(false);
-  const [userLatitude, setUserLatitude] = useState(-1);
-  const [userLongitude, setUserLongitude] = useState(-1);
+  const [isLocationValid, setIsLocationValid] = useState(false)
+  const [userLatitude, setUserLatitude] = useState(-1)
+  const [userLongitude, setUserLongitude] = useState(-1)
 
   const success = (pos: GeolocationPosition) => {
-    const crd = pos.coords;
-
-    // console.log("Your current position is:");
-    // console.log(`Latitude : ${crd.latitude}`);
-    // console.log(`Longitude: ${crd.longitude}`);
-    // console.log(`More or less ${crd.accuracy} meters.`);
-
-    setUserLatitude(crd.latitude);
-    setUserLongitude(crd.longitude);
-    setIsLocationValid(true);
+    const crd = pos.coords
+    setUserLatitude(crd.latitude)
+    setUserLongitude(crd.longitude)
+    setIsLocationValid(true)
   }
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((result) => {
-          if (result.state === "granted") {
-            navigator.geolocation.getCurrentPosition(success);
-          } else if (result.state === "prompt") {
-            navigator.geolocation.getCurrentPosition(success, (err) => {
-              console.log(`ERROR(${err.code}): ${err.message}`);
-            }, {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'granted') {
+          navigator.geolocation.getCurrentPosition(success)
+        } else if (result.state === 'prompt') {
+          navigator.geolocation.getCurrentPosition(
+            success,
+            (err) => {
+              console.log(`ERROR(${err.code}): ${err.message}`)
+            },
+            {
               enableHighAccuracy: true,
               timeout: 5000,
               maximumAge: 0,
-            });
-          } else if (result.state === "denied") {
-            console.log("User denied geolocation position");
-          }
-        });
+            }
+          )
+        } else if (result.state === 'denied') {
+          console.log('User denied geolocation position')
+        }
+      })
     } else {
-      console.log("geolocation not available");
+      console.log('geolocation not available')
     }
-  }, []);
+  }, [])
 
-  const handleClick = (path: string) => {
-    router.push(`/deal/${path}`);
+  useEffect(() => {
+    if (!isLocationValid) return
+    ;(async () => {
+      console.log(
+        `Finding deals within ${MAX_DISTANCE_IN_METERS}m of ${userLatitude}, ${userLongitude}`
+      )
+      const data = await api.findDeals(userLatitude, userLongitude)
+      setCurrentDeals(data.deals)
+    })()
+  }, [isLocationValid, userLatitude, userLongitude])
+
+  const handleClick = (path: number) => {
+    router.push(`/deal/${path}`)
   }
 
   const onTextChange = (text: string) => {
-    setCurrentFilter(text);
+    setCurrentFilter(text)
   }
 
   const filterDealsToCriteria = (deals: Deal[], criteria: string) => {
-    let result = deals;
+    let result = deals
 
     // Sort according to location if user has location enabled
     if (isLocationValid) {
-      result = result.sort((a, b) =>
-        distance(a.merchantOutlet.location.latitude, userLatitude, a.merchantOutlet.location.longitude, userLongitude) -
-        distance(b.merchantOutlet.location.latitude, userLatitude, b.merchantOutlet.location.longitude, userLongitude)
+      result = result.sort(
+        (a, b) =>
+          distance(
+            a.merchantOutlet.location.latitude,
+            userLatitude,
+            a.merchantOutlet.location.longitude,
+            userLongitude
+          ) -
+          distance(
+            b.merchantOutlet.location.latitude,
+            userLatitude,
+            b.merchantOutlet.location.longitude,
+            userLongitude
+          )
       )
     }
 
     if (isBlank(criteria)) {
-      return result;
+      return result
     }
 
     // Filter result according to user criteria in text box
-    const lowercaseCriteria = criteria.toLowerCase();
-    return result.filter(deal =>
-      deal.dealDescription.toLowerCase().includes(lowercaseCriteria)
-      || deal.merchantOutlet.merchant.name.toLowerCase().includes(lowercaseCriteria)
-      || deal.merchantOutlet.address.toLowerCase().includes(lowercaseCriteria)
-    );
+    const lowercaseCriteria = criteria.toLowerCase()
+    return result.filter(
+      (deal) =>
+        deal.dealDescription.toLowerCase().includes(lowercaseCriteria) ||
+        deal.merchantOutlet.merchant.name
+          .toLowerCase()
+          .includes(lowercaseCriteria) ||
+        deal.merchantOutlet.address.toLowerCase().includes(lowercaseCriteria)
+    )
   }
 
   return (
@@ -110,14 +139,19 @@ const Home: NextPage = () => {
               Find the nearest deals
             </Typography>
 
-            <TextField fullWidth id="search" label="Search" variant="outlined" margin="normal"
-                       value={currentFilter} className={styles.textField}
-                       onChange={(e) => onTextChange(e.target.value)} />
+            <TextField
+              fullWidth
+              id="search"
+              label="Search"
+              variant="outlined"
+              margin="normal"
+              value={currentFilter}
+              className={styles.textField}
+              onChange={(e) => onTextChange(e.target.value)}
+            />
             <Box sx={{ m: 1 }} />
 
-            <Typography component="div">
-              TODO: Filter List here
-            </Typography>
+            <Typography component="div">TODO: Filter List here</Typography>
             <Box sx={{ m: 4 }} />
 
             <Typography align="left" variant="h4" component="div" gutterBottom>
@@ -125,32 +159,52 @@ const Home: NextPage = () => {
             </Typography>
 
             <Grid container spacing={2}>
-              {
-                filterDealsToCriteria(currentDeals, currentFilter).map(deal => {
+              {filterDealsToCriteria(currentDeals, currentFilter).map(
+                (deal) => {
                   return (
-                    <Grid item xs={6} key={deal.id} onClick={() => handleClick(deal.id)}>
+                    <Grid
+                      item
+                      xs={6}
+                      key={deal.id}
+                      onClick={() => handleClick(deal.id)}
+                    >
                       <div>
-                        <Image src={deal.merchantOutlet.imageUrl} className={styles.image} />
-                        <Typography variant="h6">{deal.merchantOutlet.merchant.name}</Typography>
-                        {
-                          isLocationValid ?
-                            <Typography>{formatDistance(userLatitude, deal.merchantOutlet.location.latitude,
-                              userLongitude, deal.merchantOutlet.location.longitude)}</Typography> :
-                            <div />
-                        }
+                        <Image
+                          src={deal.merchantOutlet.imageUrl}
+                          className={styles.image}
+                        />
+                        <Typography variant="h6">
+                          {deal.merchantOutlet.merchant.name}
+                        </Typography>
+                        {isLocationValid ? (
+                          <Typography>
+                            {formatDistance(
+                              userLatitude,
+                              deal.merchantOutlet.location.latitude,
+                              userLongitude,
+                              deal.merchantOutlet.location.longitude
+                            )}
+                          </Typography>
+                        ) : (
+                          <div />
+                        )}
+                        <Typography sx={{ display: 'inline-block' }}>
+                          {PriceFormatter.format(deal.currentPrice)}&nbsp;
+                        </Typography>
                         <Typography
-                          sx={{ display: 'inline-block' }}>{PriceFormatter.format(deal.currentPrice)}&nbsp;</Typography>
-                        <Typography className={styles.strikethrough}
-                                    sx={{ display: 'inline-block' }}>{PriceFormatter.format(deal.originalPrice)}</Typography>
+                          className={styles.strikethrough}
+                          sx={{ display: 'inline-block' }}
+                        >
+                          {PriceFormatter.format(deal.originalPrice)}
+                        </Typography>
                       </div>
                     </Grid>
-                  );
-                })
-              }
+                  )
+                }
+              )}
             </Grid>
           </ThemeProvider>
         </Container>
-
       </main>
     </div>
   )
