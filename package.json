@@ -10,11 +10,13 @@
     "packages/*"
   ],
   "scripts": {
+    "prepare": "husky install",
     "format": "prettier --write \"packages/**/*.{ts,tsx}\"",
     "dev:be": "yarn workspace @whatsyourdeal/backend dev",
     "dev:fe": "yarn workspace @whatsyourdeal/client dev"
   },
   "devDependencies": {
+    "husky": "^7.0.4",
     "prettier": "^2.5.1",
     "typescript": "^4.5.5"
   }
