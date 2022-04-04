@@ -40,7 +40,7 @@ export class DealsService {
     return this.dealsRepository.find({
       where,
       skip: query.skip ?? 0,
-      take: query.take ?? 100,
+      take: query.take ?? 10,
       closestTo,
       withinRangeInMeters,
       orderByDistance,
