@@ -4,60 +4,59 @@ import {
   EntityRepository,
   FindManyOptions,
   FindOneOptions,
+  FindOptionsUtils,
+  getConnection,
   SaveOptions,
 } from 'typeorm'
 import { Point } from 'wkx'
 
 type AdditionalOpts = {
   closestTo?: Point
-  withinRange?: number
+  withinRangeInMeters?: number
+  orderByDistance?: 'ASC' | 'DESC'
 }
 
 @EntityRepository(Deal)
 export class DealRepository extends AbstractRepository<Deal> {
-  findOne(id: number, options?: FindOneOptions<Deal>) {
+  findOne(id: number, options?: FindOneOptions<Deal> & AdditionalOpts) {
     let query = this.getBaseFindQuery(options)
     query = query.andWhereInIds([id])
     return query.getOne()
   }
 
   find(options?: FindManyOptions<Deal> & AdditionalOpts): Promise<Deal[]> {
-    let query = this.getBaseFindQuery(options)
-
-    if (options?.take) {
-      query = query.take(options.take)
-    }
-
-    if (options?.skip) {
-      query = query.skip(options.skip)
-    }
+    const query = this.getBaseFindQuery(options)
     return query.getMany()
   }
 
   private getBaseFindQuery(
     options?: (FindManyOptions<Deal> | FindOneOptions<Deal>) & AdditionalOpts
   ) {
-    let query = this.createQueryBuilder('deal')
+    const metadata = getConnection().getMetadata(Deal)
+
+    let query = this.manager.createQueryBuilder(Deal, metadata.name)
+    FindOptionsUtils.applyFindManyOptionsOrConditionsToQueryBuilder(
+      query,
+      options
+    )
+    if (
+      !FindOptionsUtils.isFindManyOptions(options) ||
+      options.loadEagerRelations !== false
+    ) {
+      FindOptionsUtils.joinEagerRelations(query, query.alias, metadata)
+    }
 
     if (options?.closestTo) {
       query = query.addSelect(
-        `ST_Distance_Sphere(location, ST_GeomFromText('${options.closestTo.toWkt()}', 4326))`,
+        `ST_Distance_Sphere(geoLocation, ST_GeomFromText('${options.closestTo.toWkt()}', 4326))`,
         'distance'
       )
+
+      query = query.orderBy('distance', options.orderByDistance ?? 'ASC')
     }
 
-    if (options?.withinRange) {
-      query = query.having(`distance < ${options.withinRange}`)
-    }
-
-    if (options?.where) {
-      query = query.where(options.where)
-    }
-
-    if (options?.relations) {
-      for (const relation of options.relations) {
-        query = query.leftJoinAndSelect(relation, '')
-      }
+    if (options?.withinRangeInMeters) {
+      query = query.having(`distance < ${options.withinRangeInMeters}`)
     }
 
     return query
