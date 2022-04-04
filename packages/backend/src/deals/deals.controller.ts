@@ -30,5 +30,7 @@ export class DealsController {
   @Post('/create')
   async createDeal(@Body() body: CreateDealRequest) {
     await this.dealsService.createDeal(body)
+
+    // TODO: send request to Telegram service.
   }
 }
