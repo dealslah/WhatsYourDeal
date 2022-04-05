@@ -17,6 +17,8 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { toast, ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.min.css'
 import api from '../../api'
 import styles from '../../styles/ContactUs.module.css'
 
@@ -51,9 +53,27 @@ const CreateDealPage: NextPage = () => {
         hasSucceeded = true
       } catch (e) {
         console.error(e)
+        toast.error('Error occured when creating new deal.', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
       }
 
       if (hasSucceeded) {
+        toast.success('Success!', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
         setTimeout(() => router.push('/'), 3000)
       }
     },
@@ -61,123 +81,138 @@ const CreateDealPage: NextPage = () => {
   )
 
   return (
-    <Container>
-      <Box sx={{ m: 3 }} />
-      <Typography variant="h3">Contact Us</Typography>
-
-      <Box sx={{ m: 2 }} />
-
-      <Typography>
-        Hi Merchants! If you are interested in listing a deal on WhatsYourDeal,
-        please fill up the form below and we will add your deal into
-        WhatsYourDeal soon!
-      </Typography>
-
-      <form>
-        <FormControl fullWidth margin="normal" className={styles.textField}>
-          <InputLabel>Merchant Name</InputLabel>
-          <Select
-            defaultValue=""
-            onChange={(e) => onSelectMerchantName(e.target.value as string)}
-          >
-            {merchants.map((merchant) => (
-              <MenuItem key={merchant.name} value={merchant.name}>
-                {merchant.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth margin="normal" className={styles.textField}>
-          <InputLabel>Outlet</InputLabel>
-          <Select defaultValue="" {...register('merchantOutletId')}>
-            {merchantOutlets.map((outlet) => (
-              <MenuItem key={outlet.id} value={outlet.id}>
-                {outlet.address}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <TextField
-          fullWidth
-          label="Deal Description"
-          margin="normal"
-          className={styles.textField}
-          {...register('dealDescription')}
-        />
-        <TextField
-          fullWidth
-          label="Original Price"
-          margin="normal"
-          className={styles.textField}
-          {...register('originalPrice')}
-        />
-        <TextField
-          fullWidth
-          label="Current Price"
-          margin="normal"
-          className={styles.textField}
-          {...register('currentPrice')}
-        />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Controller
-            control={control}
-            name="promotionStartDate"
-            render={({ field: { onChange, value } }) => (
-              <DatePicker
-                label="Promotion Start Date"
-                value={value}
-                onChange={(date: Date | null) => {
-                  onChange(date?.toISOString())
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    fullWidth
-                    margin="normal"
-                    className={styles.textField}
-                    {...params}
-                  />
-                )}
-              />
-            )}
-          />
-        </LocalizationProvider>
-
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Controller
-            control={control}
-            name="promotionEndDate"
-            render={({ field: { onChange, value } }) => (
-              <DatePicker
-                label="Promotion End Date"
-                value={value}
-                onChange={(date: Date | null) => {
-                  onChange(date?.toISOString())
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    fullWidth
-                    margin="normal"
-                    className={styles.textField}
-                    {...params}
-                  />
-                )}
-              />
-            )}
-          />
-        </LocalizationProvider>
-
+    <div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <Container>
         <Box sx={{ m: 3 }} />
-        <Button
-          variant="contained"
-          sx={{ borderRadius: 28 }}
-          onClick={handleSubmit(onSubmit)}
-        >
-          Submit
-        </Button>
-      </form>
-    </Container>
+        <Typography variant="h3">Contact Us</Typography>
+
+        <Box sx={{ m: 2 }} />
+
+        <Typography>
+          Hi Merchants! If you are interested in listing a deal on WhatsYourDeal,
+          please fill up the form below and we will add your deal into
+          WhatsYourDeal soon!
+        </Typography>
+
+        <form>
+          <FormControl fullWidth margin="normal" className={styles.textField}>
+            <InputLabel>Merchant Name</InputLabel>
+            <Select
+              defaultValue=""
+              onChange={(e) => onSelectMerchantName(e.target.value as string)}
+            >
+              {merchants.map((merchant) => (
+                <MenuItem key={merchant.name} value={merchant.name}>
+                  {merchant.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth margin="normal" className={styles.textField}>
+            <InputLabel>Outlet</InputLabel>
+            <Select defaultValue="" {...register('merchantOutletId')}>
+              {merchantOutlets.map((outlet) => (
+                <MenuItem key={outlet.id} value={outlet.id}>
+                  {outlet.address}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            fullWidth
+            label="Deal Description"
+            margin="normal"
+            className={styles.textField}
+            {...register('dealDescription')}
+          />
+          <TextField
+            fullWidth
+            label="Original Price"
+            margin="normal"
+            className={styles.textField}
+            {...register('originalPrice')}
+          />
+          <TextField
+            fullWidth
+            label="Current Price"
+            margin="normal"
+            className={styles.textField}
+            {...register('currentPrice')}
+          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Controller
+              control={control}
+              name="promotionStartDate"
+              defaultValue={new Date().toISOString()}
+              render={({ field: { onChange, value } }) => (
+                <DatePicker
+                  label="Promotion Start Date"
+                  value={value}
+                  onChange={(date: Date | null) => {
+                    onChange(date?.toISOString())
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      className={styles.textField}
+                      {...params}
+                    />
+                  )}
+                />
+              )}
+            />
+          </LocalizationProvider>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Controller
+              control={control}
+              name="promotionEndDate"
+              defaultValue={new Date().toISOString()}
+              render={({ field: { onChange, value } }) => (
+                <DatePicker
+                  label="Promotion End Date"
+                  value={value}
+                  onChange={(date: Date | null) => {
+                    onChange(date?.toISOString())
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      className={styles.textField}
+                      {...params}
+                    />
+                  )}
+                />
+              )}
+            />
+          </LocalizationProvider>
+
+          <Box sx={{ m: 3 }} />
+          <Button
+            variant="contained"
+            sx={{ borderRadius: 28 }}
+            onClick={handleSubmit(onSubmit)}
+          >
+            Submit
+          </Button>
+        </form>
+      </Container>
+    </div>
   )
 }
 
