@@ -1,4 +1,12 @@
-import { Box, Button, Container, Grid, TextField, ThemeProvider, Typography, } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from '@mui/material'
 import { Deal } from '@whatsyourdeal/backend/types/models'
 import Image from 'material-ui-image'
 import type { NextPage } from 'next'
@@ -37,9 +45,11 @@ const Home: NextPage = () => {
   }, [isLocationValid, userLatitude, userLongitude])
 
   const populateCategories = (deals: Deal[]) => {
-    const categories = new Set(deals.map(deal => deal.merchantOutlet.merchant.category))
+    const categories = new Set(
+      deals.map((deal) => deal.merchantOutlet.merchant.category)
+    )
     const categoryMap: Map<string, boolean> = new Map()
-    categories.forEach(category => categoryMap.set(category, true))
+    categories.forEach((category) => categoryMap.set(category, true))
     setCategories(categoryMap)
   }
 
@@ -81,7 +91,9 @@ const Home: NextPage = () => {
     }
 
     // Category filter
-    result = result.filter((deal) => categories.get(deal.merchantOutlet.merchant.category))
+    result = result.filter((deal) =>
+      categories.get(deal.merchantOutlet.merchant.category)
+    )
 
     if (isBlank(criteria)) {
       return result
@@ -130,17 +142,20 @@ const Home: NextPage = () => {
 
             <Box sx={{ m: 2 }} />
 
-            {
-              Array.from(categories).map(categoryItem => {
-                const item = categoryItem[0];
-                const status = categoryItem[1];
-                return (
-                  <Button key={item} variant={status ? "contained" : "outlined"}
-                          className={styles.category}
-                          onClick={() => handleButtonClick(item)}>{item}</Button>
-                );
-              })
-            }
+            {Array.from(categories).map((categoryItem) => {
+              const item = categoryItem[0]
+              const status = categoryItem[1]
+              return (
+                <Button
+                  key={item}
+                  variant={status ? 'contained' : 'outlined'}
+                  className={styles.category}
+                  onClick={() => handleButtonClick(item)}
+                >
+                  {item}
+                </Button>
+              )
+            })}
 
             <Box sx={{ m: 4 }} />
 
