@@ -54,10 +54,12 @@ const Home: NextPage = () => {
   }
 
   const handleButtonClick = (item: string) => {
-    const newMap = new Map(categories)
-    const oldValue = newMap.get(item)
-    newMap.set(item, !oldValue)
-    setCategories(newMap)
+    setCategories(categories => {
+      const newMap = new Map(categories)
+      const oldValue = newMap.get(item)
+      newMap.set(item, !oldValue)
+      return newMap
+    })
   }
 
   const handleClick = (path: number) => {
