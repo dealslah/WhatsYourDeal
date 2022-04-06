@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Container,
   Grid,
   TextField,
@@ -27,6 +28,7 @@ const Home: NextPage = () => {
 
   const [currentDeals, setCurrentDeals] = useState<Deal[]>([])
   const [currentFilter, setCurrentFilter] = useState<string>('')
+  const [categories, setCategories] = useState<Map<string, boolean>>(new Map())
 
   const { isLocationValid, userLatitude, userLongitude } = useGeoLocation()
 
@@ -37,10 +39,28 @@ const Home: NextPage = () => {
         `Finding deals within ${MAX_DISTANCE_IN_METERS}m of ${userLatitude}, ${userLongitude}`
       )
       const data = await api.findDeals(userLatitude, userLongitude)
-      console.log(data)
       setCurrentDeals(data.deals)
+      populateCategories(data.deals)
     })()
   }, [isLocationValid, userLatitude, userLongitude])
+
+  const populateCategories = (deals: Deal[]) => {
+    const categories = new Set(
+      deals.map((deal) => deal.merchantOutlet.merchant.category)
+    )
+    const categoryMap: Map<string, boolean> = new Map()
+    categories.forEach((category) => categoryMap.set(category, true))
+    setCategories(categoryMap)
+  }
+
+  const handleButtonClick = (item: string) => {
+    setCategories(categories => {
+      const newMap = new Map(categories)
+      const oldValue = newMap.get(item)
+      newMap.set(item, !oldValue)
+      return newMap
+    })
+  }
 
   const handleClick = (path: number) => {
     router.push(`/deal/${path}`)
@@ -71,6 +91,11 @@ const Home: NextPage = () => {
           )
       )
     }
+
+    // Category filter
+    result = result.filter((deal) =>
+      categories.get(deal.merchantOutlet.merchant.category)
+    )
 
     if (isBlank(criteria)) {
       return result
@@ -116,9 +141,24 @@ const Home: NextPage = () => {
               className={styles.textField}
               onChange={(e) => onTextChange(e.target.value)}
             />
-            <Box sx={{ m: 1 }} />
 
-            <Typography component="div">TODO: Filter List here</Typography>
+            <Box sx={{ m: 2 }} />
+
+            {Array.from(categories).map((categoryItem) => {
+              const item = categoryItem[0]
+              const status = categoryItem[1]
+              return (
+                <Button
+                  key={item}
+                  variant={status ? 'contained' : 'outlined'}
+                  className={styles.category}
+                  onClick={() => handleButtonClick(item)}
+                >
+                  {item}
+                </Button>
+              )
+            })}
+
             <Box sx={{ m: 4 }} />
 
             <Typography align="left" variant="h4" component="div" gutterBottom>

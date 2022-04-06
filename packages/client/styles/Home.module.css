@@ -12,3 +12,8 @@
   text-decoration: line-through;
   color: #8F8F8F;
 }
+
+.category {
+  border-radius: 28px;
+  margin-right: 10px;
+}
