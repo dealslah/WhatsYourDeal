@@ -1,6 +1,4 @@
-import { Deal } from 'db/entities/deal'
-import { Merchant, MerchantCategory } from 'db/entities/merchant'
-import { MerchantOutlet } from 'db/entities/merchantOutlet'
+import { Deal, Merchant, MerchantCategory, MerchantOutlet } from './models'
 
 export interface FindMerchantsRequest {
   name?: string | string[]

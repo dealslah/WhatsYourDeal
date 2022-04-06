@@ -6,69 +6,43 @@ import {
   ThemeProvider,
   Typography,
 } from '@mui/material'
+import { Deal } from '@whatsyourdeal/backend/types/models'
 import Image from 'material-ui-image'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import api from '../api'
 import TelegramButton from '../components/TelegramButton'
-import { Deal } from '../entities/deal'
-import sampleDeals from '../entities/sampleDeals'
 import styles from '../styles/Home.module.css'
 import theme from '../theme/theme'
 import PriceFormatter from '../util/PriceFormatter'
+import { useGeoLocation } from '../util/useGeoLocation'
 import { distance, formatDistance, isBlank } from '../util/util'
+
+const MAX_DISTANCE_IN_METERS = 2000
 
 const Home: NextPage = () => {
   const router = useRouter()
 
-  const [currentDeals, setCurrentDeals] = useState<Deal[]>(sampleDeals)
+  const [currentDeals, setCurrentDeals] = useState<Deal[]>([])
   const [currentFilter, setCurrentFilter] = useState<string>('')
 
-  const [isLocationValid, setIsLocationValid] = useState(false)
-  const [userLatitude, setUserLatitude] = useState(-1)
-  const [userLongitude, setUserLongitude] = useState(-1)
-
-  const success = (pos: GeolocationPosition) => {
-    const crd = pos.coords
-
-    // console.log("Your current position is:");
-    // console.log(`Latitude : ${crd.latitude}`);
-    // console.log(`Longitude: ${crd.longitude}`);
-    // console.log(`More or less ${crd.accuracy} meters.`);
-
-    setUserLatitude(crd.latitude)
-    setUserLongitude(crd.longitude)
-    setIsLocationValid(true)
-  }
+  const { isLocationValid, userLatitude, userLongitude } = useGeoLocation()
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-        if (result.state === 'granted') {
-          navigator.geolocation.getCurrentPosition(success)
-        } else if (result.state === 'prompt') {
-          navigator.geolocation.getCurrentPosition(
-            success,
-            (err) => {
-              console.log(`ERROR(${err.code}): ${err.message}`)
-            },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 0,
-            }
-          )
-        } else if (result.state === 'denied') {
-          console.log('User denied geolocation position')
-        }
-      })
-    } else {
-      console.log('geolocation not available')
-    }
-  }, [])
+    if (!isLocationValid) return
+    ;(async () => {
+      console.log(
+        `Finding deals within ${MAX_DISTANCE_IN_METERS}m of ${userLatitude}, ${userLongitude}`
+      )
+      const data = await api.findDeals(userLatitude, userLongitude)
+      console.log(data)
+      setCurrentDeals(data.deals)
+    })()
+  }, [isLocationValid, userLatitude, userLongitude])
 
-  const handleClick = (path: string) => {
+  const handleClick = (path: number) => {
     router.push(`/deal/${path}`)
   }
 

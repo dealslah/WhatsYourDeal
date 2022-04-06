@@ -33,7 +33,7 @@ export class MerchantsService {
     return this.merchantRepository.find({
       where,
       skip: query.skip ?? 0,
-      take: query.take ?? 100,
+      take: query.take ?? 10,
     })
   }
 }
