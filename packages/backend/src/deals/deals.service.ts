@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Deal } from 'db/entities/deal'
+import { MerchantOutlet } from 'db/entities/merchantOutlet'
 import { DealRepository } from 'db/repositories/deal'
 import { FindCondition, In } from 'typeorm'
-import { FindDealsRequest } from 'types/interfaces'
+import { CreateDealRequest, FindDealsRequest } from 'types/interfaces'
 import { Point } from 'wkx'
 
 @Injectable()
@@ -52,5 +53,18 @@ export class DealsService {
     return this.dealsRepository.findOne(id, {
       relations: ['merchantOutlet', 'merchantOutlet.merchant'],
     })
+  }
+
+  createDeal(request: CreateDealRequest) {
+    return this.dealsRepository.save([
+      new Deal({
+        merchantOutlet: new MerchantOutlet({ id: request.merchantOutletId }),
+        description: request.dealDescription,
+        dealStartDate: new Date(request.promotionStartDate),
+        dealEndDate: new Date(request.promotionEndDate),
+        originalPrice: request.originalPrice,
+        discountPrice: request.currentPrice,
+      }),
+    ])
   }
 }

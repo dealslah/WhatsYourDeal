@@ -38,3 +38,12 @@ export interface FindDealsResponse {
 export interface FindDealByIdResponse {
   deal: Deal | null
 }
+
+export interface CreateDealRequest {
+  merchantOutletId: number
+  dealDescription: string
+  originalPrice: number
+  currentPrice: number
+  promotionStartDate: string
+  promotionEndDate: string
+}
