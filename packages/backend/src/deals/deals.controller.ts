@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { mapDealToApiType } from 'db/mappers/deal'
+import telegramBot from 'services/telegramBot'
 import {
   CreateDealRequest,
   FindDealByIdResponse,
@@ -29,8 +30,16 @@ export class DealsController {
 
   @Post('/create')
   async createDeal(@Body() body: CreateDealRequest) {
-    await this.dealsService.createDeal(body)
+    const deal = await this.dealsService.createDeal(body)
 
-    // TODO: send request to Telegram service.
+    await telegramBot.sendMessage({
+      merchant: deal.merchantOutlet.merchant.name,
+      location: deal.merchantOutlet.address,
+      originalPrice: deal.originalPrice.toString(),
+      discountPrice: deal.discountPrice.toString(),
+      promotionStartDate: deal.dealStartDate.toDateString(),
+      promotionEndDate: deal.dealEndDate.toDateString(),
+      description: deal.description,
+    })
   }
 }
