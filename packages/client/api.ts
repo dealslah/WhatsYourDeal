@@ -14,8 +14,19 @@ class Api {
   private client: AxiosInstance
 
   constructor() {
+    let baseURL: string | undefined
+    switch (process.env['NODE_ENV']) {
+      case 'development':
+      case 'production':
+        baseURL = 'http://localhost/api'
+        break
+      default:
+        baseURL = 'http://localhost:8080/api'
+        break
+    }
+
     this.client = axios.create({
-      baseURL: 'http://localhost:8080',
+      baseURL,
       timeout: 10000,
     })
   }

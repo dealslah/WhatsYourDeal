@@ -2,7 +2,10 @@
 FROM node:16-slim AS builder
 WORKDIR /usr/src/build
 
-COPY . ./
+COPY package.json yarn.lock ./
+COPY packages/client/package.json ./packages/client/
+COPY packages/backend/package.json ./packages/backend/
+COPY packages/backend/types ./packages/backend/
 RUN yarn install --production --frozen-lockfile
 
 RUN mkdir -p /usr/src/release
@@ -12,11 +15,12 @@ RUN cp -R packages/client/node_modules /usr/src/release/packages/client/node_mod
 RUN cp packages/client/package.json /usr/src/release/packages/client/package.json
 
 RUN yarn install --frozen-lockfile
+COPY . ./
 RUN cd packages/client && yarn build
 RUN cp -R packages/client/.next  /usr/src/release/packages/client/.next
 
 # Release
-FROM node:16-alpine
+FROM node:16-slim
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/release .
 ENV NODE_ENV=production
