@@ -1,0 +1,24 @@
+# Builder
+FROM node:16-slim AS builder
+WORKDIR /usr/src/build
+
+COPY . ./
+RUN yarn install --production --frozen-lockfile
+
+RUN mkdir -p /usr/src/release
+RUN mkdir -p /usr/src/release/packages/client
+RUN cp -R node_modules /usr/src/release/node_modules
+RUN cp -R packages/client/node_modules /usr/src/release/packages/client/node_modules
+RUN cp packages/client/package.json /usr/src/release/packages/client/package.json
+
+RUN yarn install --frozen-lockfile
+RUN cd packages/client && yarn build
+RUN cp -R packages/client/.next  /usr/src/release/packages/client/.next
+
+# Release
+FROM node:16-alpine
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/release .
+ENV NODE_ENV=production
+ENTRYPOINT cd packages/client && yarn start
+EXPOSE 3000
