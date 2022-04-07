@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Deal } from 'db/entities/deal'
 import { MerchantOutlet } from 'db/entities/merchantOutlet'
 import { DealRepository } from 'db/repositories/deal'
-import { FindCondition, In } from 'typeorm'
+import { FindCondition, In, Repository } from 'typeorm'
 import { CreateDealRequest, FindDealsRequest } from 'types/interfaces'
 import { Point } from 'wkx'
 
@@ -11,7 +11,9 @@ import { Point } from 'wkx'
 export class DealsService {
   constructor(
     @InjectRepository(DealRepository)
-    private dealsRepository: DealRepository
+    private dealsRepository: DealRepository,
+    @InjectRepository(MerchantOutlet)
+    private merchantOutletRepository: Repository<MerchantOutlet>
   ) {}
 
   findDeals(query: FindDealsRequest): Promise<Deal[]> {
@@ -55,10 +57,14 @@ export class DealsService {
     })
   }
 
-  createDeal(request: CreateDealRequest) {
-    return this.dealsRepository.save([
+  async createDeal(request: CreateDealRequest) {
+    const merchantOutlet = await this.merchantOutletRepository.findOne(
+      request.merchantOutletId,
+      { relations: ['merchant'] }
+    )
+    const deals = await this.dealsRepository.save([
       new Deal({
-        merchantOutlet: new MerchantOutlet({ id: request.merchantOutletId }),
+        merchantOutlet,
         description: request.dealDescription,
         dealStartDate: new Date(request.promotionStartDate),
         dealEndDate: new Date(request.promotionEndDate),
@@ -66,5 +72,7 @@ export class DealsService {
         discountPrice: request.currentPrice,
       }),
     ])
+
+    return deals[0]
   }
 }
