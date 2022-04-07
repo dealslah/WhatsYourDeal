@@ -1,7 +1,7 @@
 import { ConnectionOptions } from 'typeorm'
-import { Deal } from 'db/entities/deal'
-import { Merchant } from 'db/entities/merchant'
-import { MerchantOutlet } from 'db/entities/merchantOutlet'
+import { Deal } from './db/entities/deal'
+import { Merchant } from './db/entities/merchant'
+import { MerchantOutlet } from './db/entities/merchantOutlet'
 
 function getConfig(): ConnectionOptions {
   const baseConfig: ConnectionOptions = {
