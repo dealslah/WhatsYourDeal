@@ -7,6 +7,7 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-west-2.amazonaws.com
+      - scripts/create-dockerrun.sh
   build:
     commands:
       - echo Build started on `date`
