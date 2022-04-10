@@ -1,9 +1,13 @@
-import {
-  GetSecretValueCommand,
-  SecretsManagerClient,
-} from '@aws-sdk/client-secrets-manager'
+import fs from 'fs/promises'
 
-const client = new SecretsManagerClient({ region: 'us-west-2' })
+type SecretData = {
+  ARN?: string
+  Name?: string
+  VersionId?: string
+  SecretString?: string
+  VersionStages?: string[]
+  CreatedDate?: string
+}
 
 type SecretValue = {
   username: string
@@ -15,12 +19,11 @@ type SecretValue = {
 }
 
 export async function getDbSecret() {
-  const command = new GetSecretValueCommand({ SecretId: 'wydpassword' })
-  const response = await client.send(command)
-  if (!response.SecretString) {
+  const secretsBuffer = await fs.readFile('.creds/db.json')
+  const secretsData: SecretData = JSON.parse(secretsBuffer.toString())
+  if (!secretsData.SecretString) {
     throw Error('Missing secret value!')
   }
-
-  const secretVal: SecretValue = JSON.parse(response.SecretString)
+  const secretVal: SecretValue = JSON.parse(secretsData.SecretString)
   return secretVal
 }

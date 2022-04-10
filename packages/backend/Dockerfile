@@ -22,5 +22,6 @@ RUN cp -R packages/backend/dist /usr/src/release/packages/backend/dist
 FROM public.ecr.aws/docker/library/node:16-slim
 WORKDIR /usr/src/app
 COPY --from=0 /usr/src/release .
+COPY packages/backend/.creds/ .creds
 ENTRYPOINT cd packages/backend && yarn start:prod
 EXPOSE 8080

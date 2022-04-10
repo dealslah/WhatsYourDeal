@@ -16,3 +16,5 @@ env.bak/
 venv.bak/
 
 Dockerrun.aws.json
+
+.creds

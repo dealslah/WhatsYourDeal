@@ -1,13 +1,5 @@
 {
   "AWSEBDockerrunVersion": 2,
-  "volumes": [
-    {
-      "name": "aws-creds",
-      "host": {
-        "sourcePath": "~/.aws"
-      }
-    }
-  ],
   "containerDefinitions": [
     {
       "name": "wydbackend",
@@ -19,13 +11,6 @@
         {
           "hostPort": 8080,
           "containerPort": 8080
-        }
-      ],
-      "mountPoints": [
-        {
-          "sourceVolume": "aws-creds",
-          "containerPath": "/root/.aws",
-          "readOnly": true
         }
       ]
     },
