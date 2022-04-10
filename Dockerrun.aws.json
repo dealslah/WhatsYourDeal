@@ -29,7 +29,7 @@
     },
     {
       "name": "nginx",
-      "image": "{$AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/nginx:latest",
+      "image": "{$AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydnginx:latest",
       "hostname": "nginx",
       "essential": true,
       "portMappings": [

@@ -1,5 +1,5 @@
 # Builder
-FROM node:16-slim AS builder
+FROM public.ecr.aws/docker/library/node:16-alpine AS builder
 WORKDIR /usr/src/build
 
 COPY package.json yarn.lock ./
@@ -18,7 +18,7 @@ RUN cd packages/backend && yarn build
 RUN cp -R packages/backend/dist /usr/src/release/packages/backend/dist
 
 # Release
-FROM node:16-slim
+FROM public.ecr.aws/docker/library/node:16-alpine
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/release .
 ENV NODE_ENV=production

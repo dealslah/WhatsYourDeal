@@ -16,6 +16,7 @@ services:
       NODE_ENV: production
   nginx:
     build: packages/nginx
+    image: wydnginx:latest
     depends_on:
       - client
       - backend
