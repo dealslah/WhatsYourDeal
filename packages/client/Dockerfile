@@ -1,5 +1,6 @@
 # Builder
-FROM public.ecr.aws/docker/library/node:16-slim AS builder
+# Unnamed as AWS Elastic Beanstalk does not support multistage builds. https://stackoverflow.com/questions/61518512/aws-elastic-beanstalk-docker-does-not-support-multi-stage-build/62031810#62031810
+FROM public.ecr.aws/docker/library/node:16-slim
 WORKDIR /usr/src/build
 
 COPY package.json yarn.lock ./
@@ -22,6 +23,6 @@ RUN cp -R packages/client/.next  /usr/src/release/packages/client/.next
 # Release
 FROM public.ecr.aws/docker/library/node:16-slim
 WORKDIR /usr/src/app
-COPY --from=builder /usr/src/release .
+COPY --from=0 /usr/src/release .
 ENTRYPOINT cd packages/client && yarn start
 EXPOSE 3000
