@@ -1,3 +1,4 @@
+import { getDbSecret } from 'services/secrets'
 import { ConnectionOptions } from 'typeorm'
 import { Deal } from './db/entities/deal'
 import { Merchant } from './db/entities/merchant'
@@ -13,24 +14,17 @@ function getConfig(): ConnectionOptions {
     legacySpatialSupport: false,
   }
 
-  if (process.env['NODE_ENV'] == 'development') {
-    return {
-      ...baseConfig,
-      host: '',
-      port: 3306,
-      username: '',
-      password: '',
-      database: '',
-    }
-  } else if (process.env['NODE_ENV'] == 'production') {
-    return {
-      ...baseConfig,
-      host: '',
-      port: 3306,
-      username: '',
-      password: '',
-      database: '',
-    }
+  if (process.env['NODE_ENV'] == 'production') {
+    getDbSecret().then((secret) => {
+      return {
+        ...baseConfig,
+        host: secret.host,
+        port: secret.port,
+        username: secret.username,
+        password: secret.password,
+        database: 'wyd',
+      }
+    })
   }
 
   return {

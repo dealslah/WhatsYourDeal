@@ -8,16 +8,30 @@ import ormconfig from 'ormconfig'
 import { createConnection, getCustomRepository, getRepository } from 'typeorm'
 import { Point } from 'wkx'
 
-const NUM_MERCHANTS = 10000
-const NUM_OUTLETS_PER_MERCHANT = 5
-const NUM_DEALS_PER_OUTLET = 2
+const NUM_MERCHANTS = 100
+const NUM_OUTLETS_PER_MERCHANT = 10
+const NUM_DEALS_PER_OUTLET = 5
+const CHUNK_SIZE = 20
 
 async function main() {
   await createConnection(ormconfig)
 
   console.log('Creating merchants')
+  const merchants = await createMerchants()
+  console.log(`Created ${merchants.length} merchants`)
+
+  console.log('Creating outlets')
+  const merchantOutlets = await createMerchantOutlets(merchants)
+  console.log(`Created ${merchantOutlets.length} merchant outlets`)
+
+  console.log('Creating deals')
+  const deals = await createDeals(merchantOutlets)
+  console.log(`Created ${deals.length} deals`)
+}
+
+async function createMerchants() {
   const usedCompanyNames = new Set<string>()
-  let merchants: Merchant[] = []
+  const merchants: Merchant[] = []
   for (let i = 0; i < NUM_MERCHANTS; i++) {
     let name = faker.company.companyName()
     for (let j = 0; j < 50; j++) {
@@ -34,11 +48,17 @@ async function main() {
       })
     )
   }
-  merchants = await getRepository(Merchant).save(merchants)
-  console.log(`Created ${merchants.length} merchants`)
 
-  console.log('Creating outlets')
-  let merchantOutlets: MerchantOutlet[] = []
+  const savedMerchants = await Promise.all(
+    _.chunk(merchants, CHUNK_SIZE).map((chunk) => {
+      return getRepository(Merchant).save(chunk)
+    })
+  )
+  return _.flatten(savedMerchants)
+}
+
+async function createMerchantOutlets(merchants: Merchant[]) {
+  const merchantOutlets: MerchantOutlet[] = []
   for (const merchant of merchants) {
     for (let i = 0; i < NUM_OUTLETS_PER_MERCHANT; i++) {
       merchantOutlets.push(
@@ -54,13 +74,17 @@ async function main() {
       )
     }
   }
-  merchantOutlets = await getRepository(MerchantOutlet).save(merchantOutlets, {
-    chunk: 10,
-  })
-  console.log(`Created ${merchantOutlets.length} merchants`)
 
-  console.log('Creating deals')
-  let deals: Deal[] = []
+  const savedOutlets = await Promise.all(
+    _.chunk(merchantOutlets, CHUNK_SIZE).map((chunk) => {
+      return getRepository(MerchantOutlet).save(chunk)
+    })
+  )
+  return _.flatten(savedOutlets)
+}
+
+async function createDeals(merchantOutlets: MerchantOutlet[]) {
+  const deals: Deal[] = []
   for (const merchantOutlet of merchantOutlets) {
     for (let i = 0; i < NUM_DEALS_PER_OUTLET; i++) {
       const originalPrice = Number(faker.commerce.price())
@@ -87,8 +111,12 @@ async function main() {
       )
     }
   }
-  deals = await getCustomRepository(DealRepository).save(deals, { chunk: 20 })
-  console.log(`Created ${deals.length} deals`)
+  const savedDeals = await Promise.all(
+    _.chunk(deals, CHUNK_SIZE).map((chunk) => {
+      return getCustomRepository(DealRepository).save(chunk)
+    })
+  )
+  return _.flatten(savedDeals)
 }
 
 main()
