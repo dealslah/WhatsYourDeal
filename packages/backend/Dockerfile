@@ -17,11 +17,11 @@ RUN yarn install --frozen-lockfile
 COPY . ./
 RUN cd packages/backend && yarn build
 RUN cp -R packages/backend/dist /usr/src/release/packages/backend/dist
+COPY packages/backend/.creds/ /usr/src/release/packages/backend/.creds
 
 # Release
 FROM public.ecr.aws/docker/library/node:16-slim
 WORKDIR /usr/src/app
 COPY --from=0 /usr/src/release .
-COPY packages/backend/.creds/ .creds
 ENTRYPOINT cd packages/backend && yarn start:prod
 EXPOSE 8080
