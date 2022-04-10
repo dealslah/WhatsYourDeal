@@ -16,6 +16,7 @@ async function getConfig(): Promise<ConnectionOptions> {
 
   if (process.env['NODE_ENV'] == 'production') {
     const secret = await getDbSecret()
+    console.log('secret', secret)
     return {
       ...baseConfig,
       host: secret.host,
