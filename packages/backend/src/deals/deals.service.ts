@@ -36,8 +36,11 @@ export class DealsService {
     let orderByDistance: 'ASC' | 'DESC' | undefined
     if (query.latitude && query.longitude) {
       closestTo = new Point(query.latitude, query.longitude)
-      withinRangeInMeters = query.withinRangeInMeters ?? 100
       orderByDistance = query.orderByDistance ?? 'ASC'
+
+      if (query.withinRangeInMeters) {
+        withinRangeInMeters = query.withinRangeInMeters
+      }
     }
 
     return this.dealsRepository.find({

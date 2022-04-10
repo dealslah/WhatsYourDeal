@@ -16,7 +16,6 @@ class Api {
   constructor() {
     let baseURL: string | undefined
     switch (process.env['NODE_ENV']) {
-      case 'development':
       case 'production':
         baseURL = 'http://localhost/api'
         break

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydbackend:latest
+    environment:
+      NODE_ENV: production
+    ports:
+      - '8080:8080'
+  client:
+    build:
+      context: .
+      dockerfile: packages/client/Dockerfile
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydbackend:latest
+    environment:
+      NODE_ENV: production
+    ports:
+      - '3000:3000'
+  nginx:
+    build: packages/nginx
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/nginx:latest
+    depends_on:
+      - client
+      - backend
+    ports:
+      - '80:80'
