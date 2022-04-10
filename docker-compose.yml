@@ -1,6 +1,6 @@
 version: '3'
 services:
-  backend:
+  wydbackend:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
@@ -11,7 +11,7 @@ services:
       NODE_ENV: production
     volumes:
       - ~/.aws:/root/.aws:ro
-  client:
+  wydclient:
     build:
       context: .
       dockerfile: packages/client/Dockerfile
@@ -20,7 +20,7 @@ services:
       - '3000:3000'
     environment:
       NODE_ENV: production
-  nginx:
+  wydnginx:
     build: packages/nginx
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydnginx:latest
     depends_on:
