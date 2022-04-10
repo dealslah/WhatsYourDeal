@@ -24,7 +24,7 @@ services:
     build: packages/nginx
     image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydnginx:latest
     depends_on:
-      - client
-      - backend
+      - wydclient
+      - wydbackend
     ports:
       - '80:80'
