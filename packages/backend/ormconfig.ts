@@ -4,7 +4,7 @@ import { Deal } from './db/entities/deal'
 import { Merchant } from './db/entities/merchant'
 import { MerchantOutlet } from './db/entities/merchantOutlet'
 
-function getConfig(): ConnectionOptions {
+async function getConfig(): Promise<ConnectionOptions> {
   const baseConfig: ConnectionOptions = {
     type: 'mysql',
     logging: false,
@@ -15,16 +15,15 @@ function getConfig(): ConnectionOptions {
   }
 
   if (process.env['NODE_ENV'] == 'production') {
-    getDbSecret().then((secret) => {
-      return {
-        ...baseConfig,
-        host: secret.host,
-        port: secret.port,
-        username: secret.username,
-        password: secret.password,
-        database: 'wyd',
-      }
-    })
+    const secret = await getDbSecret()
+    return {
+      ...baseConfig,
+      host: secret.host,
+      port: secret.port,
+      username: secret.username,
+      password: secret.password,
+      database: 'wyd',
+    }
   }
 
   return {

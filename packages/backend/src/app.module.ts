@@ -8,7 +8,7 @@ import { MerchantsModule } from './merchants/merchants.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(ormconfig),
+    TypeOrmModule.forRootAsync({ useFactory: async () => await ormconfig }),
     DealsModule,
     MerchantOutletsModule,
     MerchantsModule,

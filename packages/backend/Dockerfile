@@ -1,5 +1,5 @@
 # Builder
-FROM public.ecr.aws/docker/library/node:16-alpine AS builder
+FROM public.ecr.aws/docker/library/node:16-slim AS builder
 WORKDIR /usr/src/build
 
 COPY package.json yarn.lock ./
@@ -18,9 +18,8 @@ RUN cd packages/backend && yarn build
 RUN cp -R packages/backend/dist /usr/src/release/packages/backend/dist
 
 # Release
-FROM public.ecr.aws/docker/library/node:16-alpine
+FROM public.ecr.aws/docker/library/node:16-slim
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/release .
-ENV NODE_ENV=production
 ENTRYPOINT cd packages/backend && yarn start:prod
 EXPOSE 8080

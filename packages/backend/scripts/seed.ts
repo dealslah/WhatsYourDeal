@@ -14,7 +14,7 @@ const NUM_DEALS_PER_OUTLET = 5
 const CHUNK_SIZE = 20
 
 async function main() {
-  await createConnection(ormconfig)
+  await createConnection(await ormconfig)
 
   console.log('Creating merchants')
   const merchants = await createMerchants()
