@@ -17,7 +17,7 @@ class Api {
     let baseURL: string | undefined
     switch (process.env['NODE_ENV']) {
       case 'production':
-        baseURL = `http://${window.location.hostname}/api`
+        baseURL = `http://whatsyourdeal-env.eba-wmkm2ixm.us-west-2.elasticbeanstalk.com/api`
         break
       default:
         baseURL = 'http://localhost:8080/api'
