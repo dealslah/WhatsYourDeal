@@ -11,7 +11,7 @@ services:
     build:
       context: .
       dockerfile: packages/client/Dockerfile
-    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydbackend:latest
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydclient:latest
     ports:
       - '3000:3000'
   nginx:

@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "wydbackend",
-      "image": "{$AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydbackend:latest",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydbackend:latest",
       "hostname": "wydbackend",
       "essential": true,
       "memory": 2048,
@@ -16,7 +16,7 @@
     },
     {
       "name": "wydclient",
-      "image": "{$AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydclient:latest",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydclient:latest",
       "hostname": "wydclient",
       "essential": true,
       "memory": 1024,
@@ -29,7 +29,7 @@
     },
     {
       "name": "nginx",
-      "image": "{$AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydnginx:latest",
+      "image": "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/wydnginx:latest",
       "hostname": "nginx",
       "essential": true,
       "portMappings": [
