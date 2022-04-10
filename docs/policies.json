@@ -1,0 +1,29 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:InitiateLayerUpload",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:PutImage"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:*:<AWS_ACCOUNT_ID>:secret:wydpassword*",
+        "arn:aws:ecr:*:<AWS_ACCOUNT_ID>:repository/*"
+      ]
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    }
+  ]
+}
