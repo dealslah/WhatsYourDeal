@@ -17,7 +17,7 @@ class Api {
     let baseURL: string | undefined
     switch (process.env['NODE_ENV']) {
       case 'production':
-        baseURL = 'http://localhost/api'
+        baseURL = `http://${window.location.hostname}/api`
         break
       default:
         baseURL = 'http://localhost:8080/api'

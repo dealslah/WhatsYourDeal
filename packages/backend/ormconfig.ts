@@ -14,10 +14,8 @@ async function getConfig(): Promise<ConnectionOptions> {
     legacySpatialSupport: false,
   }
 
-  console.log('NODE_ENV', process.env['NODE_ENV'])
   if (process.env['NODE_ENV'] == 'production') {
     const secret = await getDbSecret()
-    console.log('secret', secret)
     return {
       ...baseConfig,
       host: secret.host,
